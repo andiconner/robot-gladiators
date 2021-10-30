@@ -1,15 +1,8 @@
-var playerName = window.prompt("What is your robot's name?");
-var playerHealth = 100;
-var playerAttack = 10;
-var playerMoney = 10;
 
-var enemyNames = ['Roborto', 'Amy Android', 'Robo Trumble'];
-var enemyHealth = 50;
-var enemyAttack = 12;
 
 // fight function (now with parameter for enemy's name)
 var fight = function(enemyName) {
-  while (playerHealth > 0 && enemyHealth > 0) {
+  while (playerInfo.health > 0 && enemyHealth > 0) {
     // ask player if they'd like to fight or run
     var promptFight = window.prompt('Would you like to FIGHT or SKIP this battle? Enter "FIGHT" or "SKIP" to choose.');
 
@@ -20,7 +13,7 @@ var fight = function(enemyName) {
 
       // if yes (true), leave fight
       if (confirmSkip) {
-        window.alert(playerName + ' has decided to skip this fight. Goodbye!');
+        window.alert(playerInfo.name + ' has decided to skip this fight. Goodbye!');
         // subtract money from playerMoney for skipping
         playerMoney = Math.max(0, playerMoney - 10);
         console.log("playerMoney", playerMoney)
@@ -47,16 +40,16 @@ var fight = function(enemyName) {
 
     var damage = randomNumber(enemyAttack - 3, enemyAttack);
 
-    playerHealth = Math.max(0, playerHealth - damage);
+    playerInfo.health = Math.max(0, playerInfo.health - damage);
 
 
     // check player's health
-    if (playerHealth <= 0) {
-      window.alert(playerName + ' has died!');
+    if (playerInfo.health <= 0) {
+      window.alert(playerInfo.name + ' has died!');
       // leave while() loop if player is dead
       break;
     } else {
-      window.alert(playerName + ' still has ' + playerHealth + ' health left.');
+      window.alert(playerInfo.name + ' still has ' + playerInfo.health + ' health left.');
     }
   }
 };
@@ -64,14 +57,14 @@ var fight = function(enemyName) {
 // function to start a new game
 var startGame = function() {
   // reset player stats
-  playerHealth = 100;
+  playerInfo.health = 100;
   playerAttack = 10;
   playerMoney = 10;
 
   // fight each enemy robot by looping over them and fighting them one at a time
   for (var i = 0; i < enemyNames.length; i++) {
     // if player is still alive, keep fighting
-    if (playerHealth > 0) {
+    if (playerInfo.health > 0) {
       // let player know what round they are in, remember that arrays start at 0 so it needs to have 1 added to it
       window.alert('Welcome to Robot Gladiators! Round ' + (i + 1));
 
@@ -85,7 +78,7 @@ var startGame = function() {
       fight(pickedEnemyName);
 
       // if player is still alive and we're not at the last enemy in the array
-      if (playerHealth > 0 && i < enemyNames.length - 1) {
+      if (playerInfo.health > 0 && i < enemyNames.length - 1) {
         // ask if player wants to use the store before next round
         var storeConfirm = window.confirm("The fight is over, visit the store before the next round?");
       
@@ -102,7 +95,7 @@ var startGame = function() {
     }
   }
 
-  // after loop ends, we are either out of playerHealth or enemies to fight, so run the endGame function
+  // after loop ends, we are either out of playerInfo.health or enemies to fight, so run the endGame function
   endGame();
 };
 
@@ -111,7 +104,7 @@ var endGame = function() {
   window.alert("The game has now ended. Let's see how you did!");
 
   // if player is still alive, player wins!
-  if (playerHealth > 0) {
+  if (playerInfo.health > 0) {
     window.alert("Great job, you've survived the game! You now have a score of " + playerMoney + '.');
   } else {
     window.alert("You've lost your robot in battle!");
@@ -142,7 +135,7 @@ var shop = function() {
         window.alert("Refilling player's health by 20 for 7 dollars.");
 
         // increase health and decrease money
-        playerHealth = playerHealth + 20;
+        playerInfo.health = playerInfo.health + 20;
         playerMoney = playerMoney - 7;
     }
     else {
@@ -177,6 +170,33 @@ var shop = function() {
   }
 };
 
+//move the enemyInfo array and playerInfo object after the randomNumber() function definition (so it will be defined for the arrays to reference), and closer to the bottom of the game.js file, directly above the call to startGame(). Organizing the code this way ensures that all functions are defined before other objects or methods try to use them//
+var playerInfo = {
+  name: window.prompt("What is your robot's name?"),
+  health: 100,
+  attack: 10,
+  money: 10,
+  reset: function() {
+    this.health = 100;
+    this.money = 10;
+    this.attack = 10;
+  }
+};
+
+var enemyInfo = [
+  {
+    name: "Roborto",
+    attack: randomNumber(10, 14)
+  },
+  {
+    name: "Amy Android",
+    attack: randomNumber(10, 14)
+  },
+  {
+    name: "Robo Trumble",
+    attack: randomNumber(10, 14)
+  }
+];
 
 // start first game when page loads
 startGame();
